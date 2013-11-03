@@ -1,0 +1,5 @@
+while (true)
+do
+  sudo raspistill -ISO 100 -t 2000 -o ./public/images/latestSnap.jpg
+  sleep 2.2
+done
