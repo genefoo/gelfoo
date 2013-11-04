@@ -40,9 +40,20 @@ server = http.createServer(app).listen(app.get('port'), function(){
     socket.on('my other event', function (data) {
       console.log(data);
     });
+    socket.on('snapRequest', function (data) {
+      console.log(data);
+      snap();
+    });
   });
 
 });
+
+function snap () {
+  var sys = require('sys')
+  var exec = require('child_process').exec;
+  function puts(error, stdout, stderr) { sys.puts(stdout) }
+  exec("raspistill -o currentSnap.jpg", puts);
+}
 
 function handler (req, res) {
   fs.readFile(__dirname + '/index.html',

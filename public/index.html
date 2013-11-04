@@ -11,11 +11,15 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    var socket = io.connect('http://localhost');
+    var socket = io.connect('http://192.168.0.253');
     socket.on('news', function (data) {
       console.log(data);
       socket.emit('my other event', { my: 'data' });
     });
+    function snapPlease() {
+      console.log("Snap requested");
+      socket.emit('snapRequest', { snap: 'requested' });
+    }
   </script>
 
 </head>
@@ -41,6 +45,7 @@
 		</div>
 		<div class="col2">
 			<!-- Column 2 start -->
+                        <button type="button" onclick="snapPlease()">Snap Picture</button>
 			<h2>GelFoo Status</h2>
 			<h3>Camera Settings</h3>
 			<p>Sensitivity: <select>
