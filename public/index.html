@@ -20,6 +20,26 @@
       console.log("Snap requested");
       socket.emit('snapRequest', { snap: 'requested' });
     }
+
+    function sendCameraConfig () {
+      // Current debug: Selecting the first option doesn't generate an event.
+      var cameraSettings = new Object();
+      var selected;
+      selected = document.getElementById("sensitivity"); 
+      cameraSettings.sensitivity = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("sharpness"); 
+      cameraSettings.sharpness = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("contrast"); 
+      cameraSettings.contrast = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("saturation"); 
+      cameraSettings.saturation = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("brightness"); 
+      cameraSettings.brightness = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("imageSize"); 
+      cameraSettings.imageSize = selected.options[selected.selectedIndex].value;
+
+      socket.emit('cameraSettings', cameraSettings);
+    }
   </script>
 
 </head>
@@ -36,9 +56,6 @@
 		<div class="col1" id="col1">
 			<!-- Column 1 start -->
 			<h2>Preview Image</h2>
-			<!-- 
-				<img src="./images/gelfoo.jpg" width="350" height="370" alt="GelFoo Image Preview" />
-			-->
 			<img src="./images/latestSnap.jpg" width="600" height="450" alt="GelFoo Image Preview" />
 			<br />
 			<!-- Column 1 end -->
@@ -48,40 +65,40 @@
                         <button type="button" onclick="snapPlease()">Snap Picture</button>
 			<h2>GelFoo Status</h2>
 			<h3>Camera Settings</h3>
-			<p>Sensitivity: <select>
+			<p>Sensitivity: <select id="sensitivity" onchange="sendCameraConfig();">
 				<option value="100">100</option>
-				<option value="200">200</option>
+				<option value="200" selected>200</option>
 				<option value="400">400</option>
 			</select><br />
-			Sharpness: <select>
+                        Sharpness: <select id="sharpness" onchange="sendCameraConfig();">
 				<option value="natural">Natural</option>
 				<option value="sharpened">Sharpened</option>
 			</select><br />
-			Contrast: <select>
-				<option value="reduced">Reduced</option>
+                        Contrast: <select id="contrast" onchange="sendCameraConfig();">
 				<option value="natural" selected>Natural</option>
+				<option value="reduced">Reduced</option>
 				<option value="increased">Increased</option>
 			</select><br />
-			Saturation: <select>
-				<option value="mutedColors">Muted Colors</option>
+                        Saturation: <select id="saturation" onchange="sendCameraConfig();">
 				<option value="natural" selected>Natural</option>
+				<option value="mutedColors">Muted Colors</option>
 				<option value="vividColors">Vivid Colors</option>
 			</select><br />
-			Brightness: <select>
-				<option value="dimmer">Dimmer</option>
+                        Brightness: <select id="brightness" onchange="sendCameraConfig();">
 				<option value="natural" selected>Natural</option>
+				<option value="dimmer">Dimmer</option>
 				<option value="brighter">Brighter</option>
 			</select><br />
-			Image Size: <select>
+                        Image Size: <select id="imageSize" onchange="sendCameraConfig();">
+				<option value="full" selected>Full: 2592x1944</option>
 				<option value="reduced800">Reduced: 800x600</option>
 				<option value="reduced1200">Reduced: 1200x900</option>
-				<option value="full" selected>Full: 2592x1944</option>
 			</select><br />
 			</p>
 			<h3>Upload Settings</h3>
 			Upload to: <select>
-				<option value="dropbox">Dropbox</option>
 				<option value="dropbox" selected>Dropbox</option>
+				<option value="dropbox">Dropbox</option>
 			</select><br />
 			<!-- Column 2 end -->
 		</div>

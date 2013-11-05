@@ -8,7 +8,7 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-//var io = require('socket.io');
+var fs = require('fs');
 
 var app = express();
 
@@ -44,8 +44,11 @@ server = http.createServer(app).listen(app.get('port'), function(){
       console.log(data);
       snap();
     });
+    socket.on('cameraSettings', function (data) {
+      console.log(data);
+      writeCameraSettings(data);
+    });
   });
-
 });
 
 function snap () {
@@ -53,6 +56,25 @@ function snap () {
   var exec = require('child_process').exec;
   function puts(error, stdout, stderr) { sys.puts(stdout) }
   exec("raspistill -o currentSnap.jpg", puts);
+}
+
+function writeCameraSettings (cameraSettings) {
+  var fd = fs.openSync("/var/www/cameraSettings.cfg", 'w', 0666);
+  fs.writeSync(fd, JSON.stringify(cameraSettings));
+  fs.closeSync(fd);
+}
+
+function readCameraSettings () {
+  if (!fs.existsSync("/var/www/cameraSettings.cfg")) createDefaultConfigFile();
+  // read the values from it
+  // send the current camera settings to the client.
+}
+
+function createDefaultConfigFile() {
+  var cameraSettings = '{"sensitivity":"100","sharpness":"natural","contrast":"natural","saturation":"natural","brightness":"natural","imageSize":"full"}';
+  var fd = fs.openSync("/var/www/cameraSettings.cfg", 'w', 0666);
+  fs.writeSync(fd, cameraSettings);
+  fs.closeSync(fd);
 }
 
 function handler (req, res) {
