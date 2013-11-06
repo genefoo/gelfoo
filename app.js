@@ -36,7 +36,7 @@ server = http.createServer(app).listen(app.get('port'), function(){
   io = require('socket.io').listen(server);
 
   io.sockets.on('connection', function (socket) {
-    socket.emit('news', { hello: 'world' });
+    readCameraSettings(socket);
     socket.on('my other event', function (data) {
       console.log(data);
     });
@@ -54,8 +54,11 @@ server = http.createServer(app).listen(app.get('port'), function(){
 function snap () {
   var sys = require('sys')
   var exec = require('child_process').exec;
+  var dateformat = require('dateformat');
+  var now = new Date();
+  var filename_time_prefix = dateformat(now, "yyyy-mm-dd_HHMMss");
   function puts(error, stdout, stderr) { sys.puts(stdout) }
-  exec("raspistill -o currentSnap.jpg", puts);
+  exec("raspistill -o ./public/images/fullsnaps/"+filename_time_prefix+"snap.jpg", puts);
 }
 
 function writeCameraSettings (cameraSettings) {
@@ -64,10 +67,11 @@ function writeCameraSettings (cameraSettings) {
   fs.closeSync(fd);
 }
 
-function readCameraSettings () {
+function readCameraSettings (socket) {
   if (!fs.existsSync("/var/www/cameraSettings.cfg")) createDefaultConfigFile();
-  // read the values from it
-  // send the current camera settings to the client.
+  var cameraSettingsString = fs.readFileSync("/var/www/cameraSettings.cfg");
+  var cameraSettings = JSON.parse(cameraSettingsString);
+  socket.emit('cameraSettings', cameraSettings);
 }
 
 function createDefaultConfigFile() {

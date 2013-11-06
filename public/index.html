@@ -16,6 +16,9 @@
       console.log(data);
       socket.emit('my other event', { my: 'data' });
     });
+    socket.on('cameraSettings', function (data) {
+      console.log(data);
+    });
     function snapPlease() {
       console.log("Snap requested");
       socket.emit('snapRequest', { snap: 'requested' });
