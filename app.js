@@ -21,6 +21,7 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.directory(path.join(__dirname, 'public')));
 app.use(app.router);
 
 // development only
@@ -29,6 +30,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+app.get('/images.html', routes.dir);
 app.get('/users', user.list);
 
 server = http.createServer(app).listen(app.get('port'), function(){
@@ -36,7 +38,8 @@ server = http.createServer(app).listen(app.get('port'), function(){
   io = require('socket.io').listen(server);
 
   io.sockets.on('connection', function (socket) {
-    readCameraSettings(socket);
+    cameraSettings = readCameraSettings(socket);
+    socket.emit('cameraSettings', cameraSettings);
     socket.on('my other event', function (data) {
       console.log(data);
     });
@@ -58,6 +61,8 @@ function snap () {
   var now = new Date();
   var filename_time_prefix = dateformat(now, "yyyy-mm-dd_HHMMss");
   function puts(error, stdout, stderr) { sys.puts(stdout) }
+  var cameraSettings = readCameraSettings();
+  // this os where to read the different camera settings and modify the command that follows.
   exec("raspistill -o ./public/images/fullsnaps/"+filename_time_prefix+"snap.jpg", puts);
 }
 
@@ -71,7 +76,7 @@ function readCameraSettings (socket) {
   if (!fs.existsSync("/var/www/cameraSettings.cfg")) createDefaultConfigFile();
   var cameraSettingsString = fs.readFileSync("/var/www/cameraSettings.cfg");
   var cameraSettings = JSON.parse(cameraSettingsString);
-  socket.emit('cameraSettings', cameraSettings);
+  return cameraSettings;
 }
 
 function createDefaultConfigFile() {
