@@ -7,7 +7,8 @@
   <body>
     <h1>Directory:</h1>
     <% for (var i=0; i<ls.length; i++) { %>
-      <%= ls[i] %><br />
+      <%- "<A HREF=images/fullsnaps/"+ls[i]+">"+ls[i]+"</A>" %>
+      <br />
     <% } %>
   </body>
 </html>

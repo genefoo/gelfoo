@@ -12,6 +12,9 @@ var fs = require('fs');
 
 var app = express();
 
+var helpers = require('express-helpers');
+helpers(app);
+
 // all environments
 app.set('port', process.env.PORT || 80);
 app.set('views', path.join(__dirname, 'views'));
