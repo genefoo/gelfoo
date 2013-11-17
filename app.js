@@ -38,7 +38,8 @@ app.get('/users', user.list);
 
 server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
-  io = require('socket.io').listen(server);
+//  io = require('socket.io').listen(server);
+  io = require('socket.io').listen(server, { log: false });
 
   io.sockets.on('connection', function (socket) {
     cameraSettings = readCameraSettings(socket);
@@ -53,6 +54,10 @@ server = http.createServer(app).listen(app.get('port'), function(){
     socket.on('cameraSettings', function (data) {
       console.log(data);
       writeCameraSettings(data);
+    });
+    socket.on('generalSettings', function (data) {
+      console.log(data);
+      writeGeneralSettings(data);
     });
   });
 });
@@ -75,6 +80,14 @@ function writeCameraSettings (cameraSettings) {
   fs.closeSync(fd);
 }
 
+function writeGeneralSettings (generalSettings) {
+  console.log("General Settings updated:");
+  console.log(generalSettings);
+  var fd = fs.openSync("/var/www/generalSettings.cfg", 'w', 0666);
+  fs.writeSync(fd, JSON.stringify(generalSettings));
+  fs.closeSync(fd);
+}
+
 function readCameraSettings (socket) {
   if (!fs.existsSync("/var/www/cameraSettings.cfg")) createDefaultConfigFile();
   var cameraSettingsString = fs.readFileSync("/var/www/cameraSettings.cfg");
@@ -85,6 +98,11 @@ function readCameraSettings (socket) {
 function createDefaultConfigFile() {
   var cameraSettings = '{"sensitivity":"100","sharpness":"natural","contrast":"natural","saturation":"natural","brightness":"natural","imageSize":"full"}';
   var fd = fs.openSync("/var/www/cameraSettings.cfg", 'w', 0666);
+  fs.writeSync(fd, cameraSettings);
+  fs.closeSync(fd);
+
+  var generalSettings = '{"fileSuffix":"snap"}';
+  fd = fs.openSync("/var/www/generalSettings.cfg", 'w', 0666);
   fs.writeSync(fd, cameraSettings);
   fs.closeSync(fd);
 }

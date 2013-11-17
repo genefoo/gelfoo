@@ -17,6 +17,12 @@
       socket.emit('my other event', { my: 'data' });
     });
     socket.on('cameraSettings', function (data) {
+      console.log("Server sent updated camera settings:");
+      console.log(data);
+      updateCameraConfig(data);
+    });
+    socket.on('generalSettings', function (data) {
+      console.log("Server sent updated general settings:");
       console.log(data);
     });
     function snapPlease() {
@@ -25,7 +31,6 @@
     }
 
     function sendCameraConfig () {
-      // Current debug: Selecting the first option doesn't generate an event.
       var cameraSettings = new Object();
       var selected;
       selected = document.getElementById("sensitivity"); 
@@ -42,6 +47,28 @@
       cameraSettings.imageSize = selected.options[selected.selectedIndex].value;
 
       socket.emit('cameraSettings', cameraSettings);
+    }
+
+    function updateCameraConfig (data) {
+      // Adjust the menu items to show the updated settings. 
+      var selected;
+
+      document.getElementById('sensitivity').value = data.sensitivity;
+      document.getElementById('sharpness').value = data.sharpness;
+      document.getElementById('contrast').value = data.contrast;
+      document.getElementById('saturation').value = data.saturation;
+      document.getElementById('brightness').value = data.brightness;
+      document.getElementById('imageSize').value = data.imageSize;
+//      var element = document.getElementById('sensitivity').value = data.sensitivity;
+//      element.value = data.sensitivity;
+    }
+
+    function sendGeneralConfig () {
+      var generalSettings = new Object();
+      generalSettings.fileSuffix = fileSuffix.value;
+      console.log(generalSettings);
+
+      socket.emit('generalSettings', generalSettings);
     }
   </script>
 
@@ -99,11 +126,12 @@
 				<option value="reduced1200">Reduced: 1200x900</option>
 			</select><br />
 			</p>
-			<h3>Upload Settings</h3>
+			<h3>General Settings</h3>
 			Upload to: <select>
 				<option value="dropbox" selected>Dropbox</option>
 				<option value="dropbox">Dropbox</option>
 			</select><br />
+			File Suffix: <input id="fileSuffix" onkeyup="sendGeneralConfig()" type=text />
 			<!-- Column 2 end -->
 		</div>
 	</div>
