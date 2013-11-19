@@ -1,0 +1,6 @@
+while :
+do
+  raspistill -o "./public/images/latestSnap.jpg"
+  sleep 0.5
+done
+

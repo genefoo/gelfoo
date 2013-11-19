@@ -39,8 +39,8 @@ app.get('/users', user.list);
 
 server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
-//  io = require('socket.io').listen(server);
-  io = require('socket.io').listen(server, { log: false });
+//  io = require('socket.io').listen(server); // With heartbeat debug messages heading to console.
+  io = require('socket.io').listen(server, { log: false }); // With heartbeat debug messages to console squelched.
 
   io.sockets.on('connection', function (socket) {
     cameraSettings = readCameraSettings(socket);
@@ -62,8 +62,34 @@ server = http.createServer(app).listen(app.get('port'), function(){
       console.log(data);
       writeGeneralSettings(data);
     });
+    socket.on('disconnect', function() {
+      console.log("Disconnect detected. Disabling preview if active.");
+      shutOffPreview();
+    });
+    socket.on('turnOnPreviews', function() {
+      turnOnPreview();
+    });
+    socket.on('turnOffPreviews', function() {
+      shutOffPreview();
+    });
   });
 });
+
+function shutOffPreview() {
+  console.log("Shutting off preview image capture.");
+  var sys = require('sys')
+  var exec = require('child_process').exec;
+  function puts(error, stdout, stderr) { sys.puts(stdout) }
+  exec("./turnOffImagePreview", puts);
+}
+
+function turnOnPreview() {
+  console.log("Turning on preview image capture.");
+  var sys = require('sys')
+  var exec = require('child_process').exec;
+  function puts(error, stdout, stderr) { sys.puts(stdout) }
+  exec("./turnOnImagePreview", puts);
+}
 
 function sensitivityString() {
   if (cameraSettings.sensitivity == "100") {return "--ISO 100 ";}

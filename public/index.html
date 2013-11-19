@@ -6,7 +6,7 @@
 	<meta name="description" content="GelFoo Imager">
 	<meta name="keywords" content="GelFoo Imager">
 	<meta name="robots" content="index, follow">
-	<link rel="shortcut icon" href="http://192.168.0.253/public/images/favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="http://192.168.0.253/images/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" type="text/css" href="./stylesheets/screen.css" media="screen">
 
   <script src="/socket.io/socket.io.js"></script><style type="text/css"></style>
@@ -26,6 +26,7 @@
       console.log(data);
       updateGeneralConfig(data);
     });
+
     function snapPlease() {
       console.log("Snap requested");
       socket.emit('snapRequest', { snap: 'requested' });
@@ -79,10 +80,13 @@
       var button = document.getElementById("previewToggleButton");
       if (previewToggleButton.value=="Turn Live Preview Images On") {
         previewToggleButton.value="Turn Live Preview Images Off";
+        socket.emit('turnOnPreviews', {});
       } else if (previewToggleButton.value=="Turn Live Preview Images Off") {
         previewToggleButton.value="Turn Live Preview Images On";
+        socket.emit('turnOffPreviews', {});
       } else {
         previewToggleButton.value="Turn Live Preview Images Off";
+        socket.emit('turnOffPreviews', {});
       }
     }
   </script>
