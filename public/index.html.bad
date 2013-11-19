@@ -1,15 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!-- saved from url=(0021)http://192.168.0.253/ -->
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+<head>
 	<title>GelFoo Imager</title>
-	
-	<meta name="description" content="GelFoo Imager">
-	<meta name="keywords" content="GelFoo Imager">
-	<meta name="robots" content="index, follow">
-	<link rel="shortcut icon" href="http://192.168.0.253/public/images/favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" type="text/css" href="./stylesheets/screen.css" media="screen">
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+	<meta name="description" content="GelFoo Imager" />
+	<meta name="keywords" content="GelFoo Imager" />
+	<meta name="robots" content="index, follow" />
+	<link rel="shortcut icon" href="/public/images/favicon.ico" type="image/x-icon" />
+	<link rel="stylesheet" type="text/css" href="./stylesheets/screen.css" media="screen" />
 
-  <script src="/socket.io/socket.io.js"></script><style type="text/css"></style>
+  <script src="/socket.io/socket.io.js"></script>
   <script>
     var socket = io.connect('http://192.168.0.253');
     socket.on('news', function (data) {
@@ -17,14 +17,12 @@
       socket.emit('my other event', { my: 'data' });
     });
     socket.on('cameraSettings', function (data) {
-      console.log("Server sent updated camera settings:");
       console.log(data);
-      updateCameraConfig(data);
     });
     socket.on('generalSettings', function (data) {
-      console.log("Server sent updated general settings:");
+      console.log("Server updated camera settings:");
       console.log(data);
-      updateGeneralConfig(data);
+      updateCameraConfig(data);
     });
     function snapPlease() {
       console.log("Snap requested");
@@ -52,44 +50,27 @@
 
     function updateCameraConfig (data) {
       // Adjust the menu items to show the updated settings. 
-      document.getElementById('sensitivity').value = data.sensitivity;
-      document.getElementById('sharpness').value = data.sharpness;
-      document.getElementById('contrast').value = data.contrast;
-      document.getElementById('saturation').value = data.saturation;
-      document.getElementById('brightness').value = data.brightness;
-      document.getElementById('imageSize').value = data.imageSize;
+      var selected;
+      selected = document.getElementById("sensitivity"); 
+      selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("sharpness"); 
+      cameraSettings.sharpness = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("contrast"); 
+      cameraSettings.contrast = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("saturation"); 
+      cameraSettings.saturation = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("brightness"); 
+      cameraSettings.brightness = selected.options[selected.selectedIndex].value;
+      selected = document.getElementById("imageSize"); 
+      cameraSettings.imageSize = selected.options[selected.selectedIndex].value;
     }
 
     function sendGeneralConfig () {
       var generalSettings = new Object();
-      selected = document.getElementById("uploadSite"); 
-      generalSettings.uploadSite = selected.options[selected.selectedIndex].value;
       generalSettings.fileSuffix = fileSuffix.value;
       console.log(generalSettings);
 
       socket.emit('generalSettings', generalSettings);
-    }
-
-    function updateGeneralConfig (data) {
-      document.getElementById('uploadSite').value = data.uploadSite;
-      document.getElementById('fileSuffix').value = data.fileSuffix;
-    }
-
-    function togglePreviewStatus() {
-      var button = document.getElementById("previewToggleButton");
-      alert(button.value);
-      console.log(button);
-      console.log(button.value);
-      if (previewToggleButton.value=="Turn Live Preview Images On") {
-        alert("Foo");
-        previewToggleButton.value="Turn Live Preview Images Off";
-      } else if (previewToggleButton.value=="Turn Live Preview Images Off") {
-        alert("Bar");
-        previewToggleButton.value="Turn Live Preview Images On";
-      } else {
-        alert("Baz!!!!");
-        previewToggleButton.value="Turn Live Preview Images Off";
-      }
     }
   </script>
 
@@ -97,8 +78,8 @@
 <body>
 
 <div id="header">
-	<h1>GelFoo Imager</h1><h1>
-	</h1><h2>Gels. Automated. Easily.</h2>
+	<h1>GelFoo Imager<h1>
+	<h2>Gels. Automated. Easily.</h2>
 
 
 </div>
@@ -107,61 +88,58 @@
 		<div class="col1" id="col1">
 			<!-- Column 1 start -->
 			<h2>Preview Image</h2>
-			<img src="./images/latestSnap.jpg" width="600" height="450" alt="GelFoo Image Preview">
-			<br>
+			<img src="./images/latestSnap.jpg" width="600" height="450" alt="GelFoo Image Preview" />
+			<br />
 			<!-- Column 1 end -->
 		</div>
 		<div class="col2">
 			<!-- Column 2 start -->
-                        <button type="button" onclick="snapPlease()">Snap Picture</button><br>
-                        <input type="button" onclick="togglePreviewStatus()" id="previewToggleButton" value="Turn Live Preview Images On" / ><br />
-			<button type="button" onclick="location.href='http://192.168.0.253/images.html'">Image Directory</button><br />
+                        <button type="button" onclick="snapPlease()">Snap Picture</button><br />
+			<button type="button" onclick="location.href='http://192.168.0.253/images.html'">Image Directory</button>
 			<h2>GelFoo Status</h2>
 			<h3>Camera Settings</h3>
 			<p>Sensitivity: <select id="sensitivity" onchange="sendCameraConfig();">
 				<option value="100">100</option>
-				<option value="200" selected="">200</option>
+				<option value="200" selected>200</option>
 				<option value="400">400</option>
-			</select><br>
+			</select><br />
+                        Sharpness: <select id="sharpness" onchange="sendCameraConfig();">
+		</div>
+		<div class="col2">
+			<!-- Column 2 start -->
+                        <button type="button" onclick="snapPlease()">Snap Picture</button><br />
+			<button type="button" onclick="location.href='http://192.168.0.253/images.html'">Image Directory</button>
+			<h2>GelFoo Status</h2>
+			<h3>Camera Settings</h3>
+			<p>Sensitivity: <select id="sensitivity" onchange="sendCameraConfig();">
+				<option value="100">100</option>
+				<option value="200" selected>200</option>
+				<option value="400">400</option>
+			</select><br />
                         Sharpness: <select id="sharpness" onchange="sendCameraConfig();">
 				<option value="natural">Natural</option>
 				<option value="sharpened">Sharpened</option>
-			</select><br>
+			</select><br />
                         Contrast: <select id="contrast" onchange="sendCameraConfig();">
-				<option value="natural" selected="">Natural</option>
+				<option value="natural" selected>Natural</option>
 				<option value="reduced">Reduced</option>
 				<option value="increased">Increased</option>
-			</select><br>
+			</select><br />
                         Saturation: <select id="saturation" onchange="sendCameraConfig();">
-				<option value="natural" selected="">Natural</option>
+				<option value="natural" selected>Natural</option>
 				<option value="mutedColors">Muted Colors</option>
 				<option value="vividColors">Vivid Colors</option>
-			</select><br>
+			</select><br />
                         Brightness: <select id="brightness" onchange="sendCameraConfig();">
-				<option value="natural" selected="">Natural</option>
+				<option value="natural" selected>Natural</option>
 				<option value="dimmer">Dimmer</option>
 				<option value="brighter">Brighter</option>
-			</select><br>
+			</select><br />
                         Image Size: <select id="imageSize" onchange="sendCameraConfig();">
-				<option value="full" selected="">Full: 2592x1944</option>
+				<option value="full" selected>Full: 2592x1944</option>
 				<option value="reduced800">Reduced: 800x600</option>
 				<option value="reduced1200">Reduced: 1200x900</option>
-			</select><br>
+			</select><br />
 			</p>
 			<h3>General Settings</h3>
 			Upload to: <select id="uploadSite" onchange="sendGeneralConfig();">
-				<option value="dropbox" selected="">Dropbox</option>
-				<option value="googleDocs">Google Docs</option>
-			</select><br>
-			File Suffix: <input id="fileSuffix" onkeyup="sendGeneralConfig()" type="text">
-			<!-- Column 2 end -->
-		</div>
-	</div>
-</div>
-<div id="footer">
-</div>
-
-
-
-</body>
-</html>
