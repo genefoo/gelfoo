@@ -77,17 +77,11 @@
 
     function togglePreviewStatus() {
       var button = document.getElementById("previewToggleButton");
-      alert(button.value);
-      console.log(button);
-      console.log(button.value);
       if (previewToggleButton.value=="Turn Live Preview Images On") {
-        alert("Foo");
         previewToggleButton.value="Turn Live Preview Images Off";
       } else if (previewToggleButton.value=="Turn Live Preview Images Off") {
-        alert("Bar");
         previewToggleButton.value="Turn Live Preview Images On";
       } else {
-        alert("Baz!!!!");
         previewToggleButton.value="Turn Live Preview Images Off";
       }
     }
