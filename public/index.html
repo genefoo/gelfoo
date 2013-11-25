@@ -81,13 +81,23 @@
       if (previewToggleButton.value=="Turn Live Preview Images On") {
         previewToggleButton.value="Turn Live Preview Images Off";
         socket.emit('turnOnPreviews', {});
+        refreshTimer = setInterval(function() {refreshPreviewImage()}, 30000);
+        refreshPreviewImage();
       } else if (previewToggleButton.value=="Turn Live Preview Images Off") {
         previewToggleButton.value="Turn Live Preview Images On";
         socket.emit('turnOffPreviews', {});
+        window.clearInterval(refreshTimer);
       } else {
         previewToggleButton.value="Turn Live Preview Images Off";
         socket.emit('turnOffPreviews', {});
+        window.clearInterval(refreshTimer);
       }
+    }
+
+    function refreshPreviewImage() {
+      var container = document.getElementById("col1");
+      var content = container.innerHTML;
+      container.innerHTML = content;
     }
   </script>
 
