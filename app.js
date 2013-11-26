@@ -135,7 +135,7 @@ function snap () {
   function puts(error, stdout, stderr) { sys.puts(stdout) }
   var cameraSettings = readCameraSettings();
   // this os where to read the different camera settings and modify the command that follows.
-  var cameraCommand = "raspistill ";
+  var cameraCommand = "sudo raspistill ";
   cameraCommand += sensitivityString();
   cameraCommand += sharpnessString();
   cameraCommand += contrastString();

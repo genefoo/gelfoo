@@ -81,7 +81,7 @@
       if (previewToggleButton.value=="Turn Live Preview Images On") {
         previewToggleButton.value="Turn Live Preview Images Off";
         socket.emit('turnOnPreviews', {});
-        refreshTimer = setInterval(function() {refreshPreviewImage()}, 30000);
+        refreshTimer = setInterval(function() {refreshPreviewImage()}, 500);
         refreshPreviewImage();
       } else if (previewToggleButton.value=="Turn Live Preview Images Off") {
         previewToggleButton.value="Turn Live Preview Images On";
